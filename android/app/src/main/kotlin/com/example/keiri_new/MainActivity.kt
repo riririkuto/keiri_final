@@ -1,4 +1,4 @@
-package com.keiri.new
+package com.keiri
 
 import io.flutter.embedding.android.FlutterActivity
 

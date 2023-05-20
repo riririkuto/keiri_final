@@ -8,6 +8,7 @@ import 'package:keiri_new/view_moedl/auth_view_model.dart';
 
 import 'package:syncfusion_flutter_calendar/calendar.dart';
 
+import 'firebase_options.dart';
 import 'screen/auth/login_view.dart';
 
 StateProvider<int> drawerIndexProvider = StateProvider((ref) => 0);
@@ -18,9 +19,12 @@ void main() async {
   print(duration.inMinutes);
   int minutes = (duration.inMinutes % 60);
   print('$hours時間 $minutes分');
-  WidgetsFlutterBinding.ensureInitialized();
-  await Firebase.initializeApp();
 
+  WidgetsFlutterBinding.ensureInitialized();
+  // Firebase CLIのときはこの設定を書く
+  await Firebase.initializeApp(
+    options: DefaultFirebaseOptions.currentPlatform,
+  );
   runApp(ProviderScope(child: MyApp()));
 }
 
