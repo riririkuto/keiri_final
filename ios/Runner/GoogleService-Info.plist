@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+	<key>CLIENT_ID</key>
+	<string>549038656022-tqo12ad31f3obhn0h2hr72qu0t4030ik.apps.googleusercontent.com</string>
+	<key>REVERSED_CLIENT_ID</key>
+	<string>com.googleusercontent.apps.549038656022-tqo12ad31f3obhn0h2hr72qu0t4030ik</string>
+	<key>API_KEY</key>
+	<string>AIzaSyBrL8aG42XgYd6PqdHRJunq1lyKG-JzuhA</string>
+	<key>GCM_SENDER_ID</key>
+	<string>549038656022</string>
+	<key>PLIST_VERSION</key>
+	<string>1</string>
+	<key>BUNDLE_ID</key>
+	<string>com.keiri.new</string>
+	<key>PROJECT_ID</key>
+	<string>keiri-a9473</string>
+	<key>STORAGE_BUCKET</key>
+	<string>keiri-a9473.appspot.com</string>
+	<key>IS_ADS_ENABLED</key>
+	<false></false>
+	<key>IS_ANALYTICS_ENABLED</key>
+	<false></false>
+	<key>IS_APPINVITE_ENABLED</key>
+	<true></true>
+	<key>IS_GCM_ENABLED</key>
+	<true></true>
+	<key>IS_SIGNIN_ENABLED</key>
+	<true></true>
+	<key>GOOGLE_APP_ID</key>
+	<string>1:549038656022:ios:2f25492977e96405fbc337</string>
+</dict>
+</plist>

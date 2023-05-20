@@ -53,6 +53,7 @@ dependencies:
   open_file: ^3.1.0
   printing: ^5.10.4
   url_launcher: ^6.1.11
+  flutter_launcher_icons: ^0.13.1
 
 
 dev_dependencies:
