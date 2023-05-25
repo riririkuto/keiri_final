@@ -37,6 +37,7 @@ class _CustomDrawerState extends ConsumerState<CustomDrawer> {
   bool ready = true;
   var seni;
   bool isLoad = true;
+  String? error;
 
   @override
   void initState() {
@@ -66,6 +67,7 @@ class _CustomDrawerState extends ConsumerState<CustomDrawer> {
           });
         },
         onAdFailedToLoad: (err) {
+          error = err.message;
           print('Failed to load an interstitial ad: ${err.message}');
         },
       ),
@@ -87,6 +89,7 @@ class _CustomDrawerState extends ConsumerState<CustomDrawer> {
               child: const CircularProgressIndicator())
           : Column(
               children: <Widget>[
+                Text(error ?? 'ああ'),
                 SizedBox(
                   height: 140.h,
                   child: UserAccountsDrawerHeader(
