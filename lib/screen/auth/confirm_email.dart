@@ -24,7 +24,7 @@ class ConfirmEmail extends ConsumerWidget {
           children: [
             Text(
               '${user?.email}\nにメールを送信しました。\nリンクをクリックし、下記のボタンを押してください。',
-              style: TextStyle(color: Colors.white, fontSize: 20.sp),
+              style: TextStyle(fontSize: 20.sp),
               textAlign: TextAlign.center,
             ),
             Spacer(),
@@ -32,7 +32,7 @@ class ConfirmEmail extends ConsumerWidget {
               height: 70.h,
               width: 150.w,
               child: ElevatedButton(
-                child:Text( '認証完了'),
+                child: Text('認証完了'),
                 onPressed: () async {
                   bool emailVerified = await ref
                       .read(authViewModelProvider.notifier)
@@ -58,7 +58,10 @@ class ConfirmEmail extends ConsumerWidget {
                 padding: MaterialStateProperty.all(EdgeInsets.zero),
                 tapTargetSize: MaterialTapTargetSize.shrinkWrap,
               ),
-              child: Text('メールの再送信。',style: TextStyle(fontSize: 10.sp),),
+              child: Text(
+                'メールの再送信。',
+                style: TextStyle(fontSize: 10.sp),
+              ),
               onPressed: () async {
                 await ref
                     .read(authViewModelProvider.notifier)
@@ -73,11 +76,11 @@ class ConfirmEmail extends ConsumerWidget {
                   children: [
                     Text('「メールが届かないという方は」.....',
                         style: TextStyle(color: Colors.red, fontSize: 20.sp)),
-
                     Text('〇迷惑メールフォルダに入っている可能性があります。ご確認ください。',
-
-                        style: TextStyle( fontSize: 18.sp)),
-                    SizedBox(height: 5.h,),
+                        style: TextStyle(fontSize: 18.sp)),
+                    SizedBox(
+                      height: 5.h,
+                    ),
                     Text('〇メールアドレスが間違っている可能性があります。変更してください。',
                         style: TextStyle(fontSize: 18.sp)),
                     Text('\nそれでも届かない場合はしばらく待ってか再度お試しください。',

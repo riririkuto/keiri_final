@@ -60,7 +60,8 @@ class _ProfileState extends ConsumerState<Profile> {
                   inputFormatters: [
                     FilteringTextInputFormatter.digitsOnly,
                   ],
-                  keyboardType: TextInputType.number,
+                  keyboardType: TextInputType.numberWithOptions(signed: true, decimal: true),
+
                   obscureText: _isObscured,
                   decoration: InputDecoration(
                     label: Text('パスワード'),

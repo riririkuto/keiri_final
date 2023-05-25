@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
+import 'package:keiri_new/main.dart';
 import 'package:keiri_new/screen/auth/password_reset_screen.dart';
 import 'package:keiri_new/screen/auth/registration_view.dart';
 
@@ -150,6 +151,7 @@ class _LoginViewState extends ConsumerState<LoginView> {
                                     .read(authViewModelProvider.notifier)
                                     .readProfile();
                                 if (!mounted) return;
+                                ref.read(drawerIndexProvider.notifier).state=0;
                                 Navigator.push(
                                     context,
                                     MaterialPageRoute(

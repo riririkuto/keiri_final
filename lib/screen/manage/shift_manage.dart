@@ -1,5 +1,8 @@
+import 'dart:io';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:google_mobile_ads/google_mobile_ads.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 
 import 'package:syncfusion_flutter_calendar/calendar.dart';
@@ -20,16 +23,21 @@ class _ShiftManageState extends ConsumerState<ShiftManage> {
   bool di = false;
   List<dynamic> selectAppointments = [];
 
+
+  late BannerAd bannerAd;
+  bool loaded = false;
+
   @override
   Widget build(BuildContext context) {
     print('ss');
+    ref.read(adProvider.notifier).state?.show();
     List<Appointment> appointments = ref.watch(shiftProvider);
     return Scaffold(
         appBar: AppBar(title: Text('シフト管理画面')),
         drawer: CustomDrawer(),
         body: Column(children: [
-          SizedBox(
-            height: onTap ? 400.h : 570.h,
+          Flexible(
+            // height: onTap ? 400.h : 570.h,
             child: Localizations.override(
               context: context,
               locale: Locale('ja'),
@@ -153,7 +161,7 @@ class _ShiftManageState extends ConsumerState<ShiftManage> {
                     )
                   ],
                 )
-              : const SizedBox()
+              : const SizedBox(),
         ]));
   }
 }

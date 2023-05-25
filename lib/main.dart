@@ -2,26 +2,29 @@ import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:google_mobile_ads/google_mobile_ads.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:keiri_new/screen/employee/shift_view.dart';
 import 'package:keiri_new/view_moedl/auth_view_model.dart';
-
 import 'package:syncfusion_flutter_calendar/calendar.dart';
 
 import 'firebase_options.dart';
 import 'screen/auth/login_view.dart';
 
 StateProvider<int> drawerIndexProvider = StateProvider((ref) => 0);
+StateProvider<int> drawerTapProvider = StateProvider((ref) => 0);
 
 void main() async {
-  Duration duration=Duration(hours:1,minutes: 22);
+  Duration duration = Duration(hours: 1, minutes: 22);
   int hours = duration.inHours;
   print(duration.inMinutes);
   int minutes = (duration.inMinutes % 60);
   print('$hours時間 $minutes分');
 
   WidgetsFlutterBinding.ensureInitialized();
+  await MobileAds.instance.initialize();
   // Firebase CLIのときはこの設定を書く
+
   await Firebase.initializeApp(
     options: DefaultFirebaseOptions.currentPlatform,
   );
@@ -37,8 +40,10 @@ class _MyAppState extends ConsumerState<MyApp> {
   @override
   void initState() {
     super.initState();
+
     ref.read(authViewModelProvider.notifier).readProfile();
   }
+
 
   @override
   Widget build(BuildContext context) {
@@ -48,9 +53,10 @@ class _MyAppState extends ConsumerState<MyApp> {
         splitScreenMode: true,
         builder: (context, child) {
           return MaterialApp(
-            localizationsDelegates: [
+            localizationsDelegates: const [
               GlobalMaterialLocalizations.delegate,
               GlobalWidgetsLocalizations.delegate,
+              GlobalCupertinoLocalizations.delegate,
             ],
             supportedLocales: [
               const Locale("en"),
@@ -63,8 +69,10 @@ class _MyAppState extends ConsumerState<MyApp> {
               primarySwatch: Colors.blue,
             ),
             home: ref.watch(authViewModelProvider) == null
-                ? LoginView()
-                : ShiftView(),
+                ? const LoginView()
+                : ref.watch(authViewModelProvider)!.emailVerified == true
+                    ? const ShiftView()
+                    : const LoginView(),
           );
         });
   }
@@ -80,9 +88,6 @@ class MyHomePage extends StatefulWidget {
 class _MyHomePageState extends State<MyHomePage> {
   @override
   Widget build(BuildContext context) {
-    print(
-      DateTime.now(),
-    );
     return Scaffold(
       appBar: AppBar(backgroundColor: Colors.grey, title: Text('カレンダー')),
       body: Localizations.override(

@@ -21,7 +21,8 @@ class MyTextField extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return TextField(
-      keyboardType: number?TextInputType.number:null,
+      keyboardType: number?TextInputType.numberWithOptions(signed: true, decimal: true):null,
+
       inputFormatters:number? [
         FilteringTextInputFormatter
             .digitsOnly

@@ -1,8 +1,10 @@
+import 'dart:io';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:google_mobile_ads/google_mobile_ads.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:intl/intl.dart';
-
 
 import '../../view_moedl/shit_view_model.dart';
 import '../../widgets/drawer.dart';
@@ -20,11 +22,54 @@ class ShiftRequestState extends ConsumerState<ShiftRequest> {
 
   late Future<TimeOfDay?> selectedTime;
   DateTime? startTime;
-
+  bool adTap = false;
   DateTime? endTime;
 
   List<Map<String, DateTime>> sce = [];
   bool onTap = false;
+  InterstitialAd? interstitialAd;
+
+  @override
+  void initState() {
+    _loadInterstitialAd();
+    super.initState();
+  }
+
+  @override
+  void dispose() {
+    // TODO: Dispose an InterstitialAd object
+    _interstitialAd?.dispose();
+
+    super.dispose();
+  }
+
+  InterstitialAd? _interstitialAd;
+
+  void _loadInterstitialAd() {
+    InterstitialAd.load(
+      adUnitId: Platform.isAndroid
+          ? 'ca-app-pub-3940256099942544/8691691433'
+          : 'ca-app-pub-5187414655441156/3688733803',
+      request: AdRequest(),
+      adLoadCallback: InterstitialAdLoadCallback(
+        onAdLoaded: (ad) {
+          ad.fullScreenContentCallback = FullScreenContentCallback(
+            onAdDismissedFullScreenContent: (ad) {
+              adTap = true;
+              showDialogPicker(context);
+            },
+          );
+
+          setState(() {
+            _interstitialAd = ad;
+          });
+        },
+        onAdFailedToLoad: (err) {
+          print('Failed to load an interstitial ad: ${err.message}');
+        },
+      ),
+    );
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -36,7 +81,7 @@ class ShiftRequestState extends ConsumerState<ShiftRequest> {
           ? Container(
               alignment: Alignment.center,
               child: const CircularProgressIndicator(
-                color: Colors.green,
+
               ))
           : Column(
               children: <Widget>[
@@ -94,7 +139,11 @@ class ShiftRequestState extends ConsumerState<ShiftRequest> {
       floatingActionButton: FloatingActionButton(
         backgroundColor: Colors.grey,
         onPressed: () {
-          showDialogPicker(context);
+          if (adTap) {
+            showDialogPicker(context);
+          } else {
+            _interstitialAd?.show();
+          }
         },
         child: const Icon(Icons.add),
       ),

@@ -1,8 +1,10 @@
+import 'dart:io';
+
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:google_mobile_ads/google_mobile_ads.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
-
 import 'package:month_picker_dialog/month_picker_dialog.dart';
 
 import '../../view_moedl/money_view_model.dart';
@@ -28,6 +30,35 @@ class _MoneyManageDecisionState extends ConsumerState<MoneyManageDecision> {
   DateTime? selectedMonth;
 
   late Future<DateTime?> selectedDate;
+
+  @override
+  void initState() {
+    // TODO: implement initState
+    ad();
+    super.initState();
+  }
+
+  void ad() {
+    var index = 0;
+
+    bannerAd = BannerAd(
+        size: AdSize.banner,
+        adUnitId: Platform.isAndroid
+            ? 'ca-app-pub-3940256099942544/6300978111'
+            : 'ca-app-pub-5187414655441156/3688733803',
+        listener: BannerAdListener(onAdLoaded: (Ad ad) {
+          setState(() {
+            loaded = true;
+          });
+        }),
+        request: AdRequest())
+      ..load();
+
+    index++;
+  }
+
+  BannerAd? bannerAd;
+  bool loaded = false;
 
   @override
   Widget build(BuildContext context) {
@@ -59,11 +90,9 @@ class _MoneyManageDecisionState extends ConsumerState<MoneyManageDecision> {
                 child: Text(title == '券売機' || title == 'レジ' ? '' : title))),
             DataCell(choiceIndex == 0
                 ? TextFormField(
-              keyboardType: TextInputType.number,
-
-              inputFormatters: [
-                FilteringTextInputFormatter.digitsOnly
-              ],
+                    keyboardType: TextInputType.numberWithOptions(
+                        signed: true, decimal: true),
+                    inputFormatters: [FilteringTextInputFormatter.digitsOnly],
                     focusNode: focusNode,
                     controller: TextEditingController()..text = value,
                     textAlign: TextAlign.right,
@@ -164,6 +193,7 @@ class _MoneyManageDecisionState extends ConsumerState<MoneyManageDecision> {
                           },
                         );
                         selectedDate.then((value) async {
+                          ad();
                           setState(() {
                             date = value!;
                           });
@@ -173,6 +203,7 @@ class _MoneyManageDecisionState extends ConsumerState<MoneyManageDecision> {
                           await ref.read(moneyProvider.notifier).getDay(zeroed);
                         }, onError: (error) {});
                       } else {
+                        ad();
                         selectedMonth = await showMonthPicker(
                           locale: const Locale("ja", "JP"),
                           // 追加
@@ -190,41 +221,46 @@ class _MoneyManageDecisionState extends ConsumerState<MoneyManageDecision> {
                     }),
               ],
             ),
-            Row(
-              mainAxisAlignment: MainAxisAlignment.end,
-              children: [
-                TextButton(
-                    child: Text('元に戻す'),
-                    onPressed: () {
-                      for (FocusNode focus in focuss) {
-                        focus.unfocus();
-                      }
-                      setState(() {
-                        print('sa');
-                      });
-                    }),
-                TextButton(
-                    child: Text(
-                      '変更する',
-                      style: TextStyle(color: Colors.red),
-                    ),
-                    onPressed: () {
-                      for (FocusNode focus in focuss) {
-                        focus.unfocus();
-                      }
-                      setState(() {
-                        ref.read(moneyProvider.notifier).update(
-                            dataList,
-                            date == null
-                                ? DateTime(widget.now.year, widget.now.month,
-                                    widget.now.day)
-                                : DateTime(date!.year, date!.month, date!.day));
-                      });
-                    }),
-              ],
-            ),
+            choiceIndex == 0
+                ? Row(
+                    mainAxisAlignment: MainAxisAlignment.end,
+                    children: [
+                      TextButton(
+                          child: Text('元に戻す'),
+                          onPressed: () {
+                            for (FocusNode focus in focuss) {
+                              focus.unfocus();
+                            }
+                            setState(() {
+                              print('sa');
+                            });
+                          }),
+                      TextButton(
+                          child: Text(
+                            '変更する',
+                            style: TextStyle(color: Colors.red),
+                          ),
+                          onPressed: () {
+                            for (FocusNode focus in focuss) {
+                              focus.unfocus();
+                            }
+                            setState(() {
+                              ref.read(moneyProvider.notifier).update(
+                                  dataList,
+                                  date == null
+                                      ? DateTime(widget.now.year,
+                                          widget.now.month, widget.now.day)
+                                      : DateTime(
+                                          date!.year, date!.month, date!.day));
+                            });
+                          }),
+                    ],
+                  )
+                : SizedBox(height: 10.h),
             dataList.isEmpty
-                ? choiceIndex==0?Text('この日のデータはありません。'):Text('この月のデータはありません。')
+                ? choiceIndex == 0
+                    ? Text('この日のデータはありません。')
+                    : Text('この月のデータはありません。')
                 : SizedBox(
                     width: double.infinity,
                     child: DataTable(
@@ -257,6 +293,13 @@ class _MoneyManageDecisionState extends ConsumerState<MoneyManageDecision> {
                       rows: rows!,
                     ),
                   ),
+           SizedBox(height: 100.h),
+            loaded
+                ? SizedBox(
+                    height: bannerAd?.size.height.toDouble(),
+                    width: bannerAd?.size.width.toDouble(),
+                    child: AdWidget(ad: bannerAd!))
+                : SizedBox(),
           ],
         ),
       ),

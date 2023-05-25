@@ -1,14 +1,12 @@
+import 'dart:io';
+
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:google_mobile_ads/google_mobile_ads.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
-
 import 'package:month_picker_dialog/month_picker_dialog.dart';
-import 'package:pdf/pdf.dart';
-import 'dart:io';
-
-import 'package:pdf/widgets.dart' as pw;
 
 import '../../view_moedl/auth_view_model.dart';
 import '../../view_moedl/kintai_view_model.dart';
@@ -16,6 +14,7 @@ import '../../widgets/alert_message.dart';
 import '../../widgets/drawer.dart';
 import '../../widgets/my_text_field.dart';
 import '../a.dart';
+
 class StaffKintai extends ConsumerStatefulWidget {
   const StaffKintai({Key? key}) : super(key: key);
 
@@ -37,10 +36,41 @@ class _StaffKintaiState extends ConsumerState<StaffKintai> {
   late Future<DateTime?> selectedDateF;
 
   @override
+  void initState() {
+    ad();
+    super.initState();
+  }
+
+  void ad() {
+    var index = 0;
+    while (index <= 3) {
+      BannerAd bannerAd;
+
+      bannerAd = BannerAd(
+          size: AdSize.banner,
+          adUnitId: Platform.isAndroid
+              ? 'ca-app-pub-3940256099942544/6300978111'
+              : 'ca-app-pub-5187414655441156/3688733803',
+          listener: BannerAdListener(onAdLoaded: (Ad ad) {
+            setState(() {
+              loaded = true;
+            });
+          }),
+          request: AdRequest())
+        ..load();
+      ads.add(bannerAd);
+
+      index++;
+    }
+  }
+
+  List<BannerAd> ads = [];
+  bool loaded = false;
+
+  @override
   Widget build(BuildContext context) {
     FocusNode focusNode = FocusNode();
     dayInfo = ref.watch(kintaiProvider);
-
 
     return Scaffold(
         drawer: CustomDrawer(),
@@ -80,7 +110,7 @@ class _StaffKintaiState extends ConsumerState<StaffKintai> {
                       } else {
                         DateTime month = DateTime(now.year, now.month, 1);
 
-                        nameSuccess = true;
+                      nameSuccess = true;
                         await ref.read(kintaiProvider.notifier).get(uid, now);
                         //
                         // setState(() {
@@ -106,15 +136,87 @@ class _StaffKintaiState extends ConsumerState<StaffKintai> {
                                   children: [
                                     Row(
                                       mainAxisAlignment:
-                                          MainAxisAlignment.end,
+                                          MainAxisAlignment.spaceBetween,
                                       children: [
+                                        TextButton(
+                                            style: ButtonStyle(),
+                                            child: Text(
+                                              '時給の変更',
+                                              style: TextStyle(fontSize: 10.sp),
+                                            ),
+                                            onPressed: () {
+                                              showDialog(
+                                                context: context,
+                                                builder:
+                                                    (BuildContext context) {
+                                                  String inputText = '';
+
+                                                  return AlertDialog(
+                                                    title: Text('時給'),
+                                                    content: TextField(
+                                                      keyboardType: TextInputType
+                                                          .numberWithOptions(
+                                                              signed: true,
+                                                              decimal: true),
+                                                      inputFormatters: [
+                                                        FilteringTextInputFormatter
+                                                            .digitsOnly
+                                                      ],
+                                                      onChanged: (text) {
+                                                        inputText = text;
+                                                      },
+                                                    ),
+                                                    actions: [
+                                                      TextButton(
+                                                        child: Text('キャンセル',
+                                                            style: TextStyle(
+                                                                color: Colors
+                                                                    .red)),
+                                                        onPressed: () {
+                                                          Navigator.of(context)
+                                                              .pop();
+                                                        },
+                                                      ),
+                                                      TextButton(
+                                                        child: Text('OK'),
+                                                        onPressed: () async {
+                                                          await ref
+                                                              .read(
+                                                                  authViewModelProvider
+                                                                      .notifier)
+                                                              .upDateHourlyWage(
+                                                                  uid,
+                                                                  int.parse(
+                                                                      inputText));
+                                                          information = await ref
+                                                              .read(
+                                                                  kintaiProvider
+                                                                      .notifier)
+                                                              .getMonth(
+                                                                  uid,
+                                                                  selectedMonth ??
+                                                                      DateTime(
+                                                                          now.year,
+                                                                          now.month,
+                                                                          1));
+
+                                                          setState(() {});
+
+                                                          Navigator.of(context)
+                                                              .pop(inputText);
+                                                        },
+                                                      ),
+                                                    ],
+                                                  );
+                                                },
+                                              );
+                                            }),
+                                        SizedBox(width: 30.w),
                                         Text(
                                             selectedMonth == null
                                                 ? '${now.year}年${now.month}月'
                                                 : '${selectedMonth!.year}年${selectedMonth!.month}月',
                                             style: TextStyle(fontSize: 30.sp)),
-                                        SizedBox(width: 5.w),
-
                                         IconButton(
                                             icon: Icon(Icons.change_circle,
                                                 color: Colors.blue,
@@ -139,15 +241,27 @@ class _StaffKintaiState extends ConsumerState<StaffKintai> {
                                                       uid, selectedMonth!);
                                               setState(() {});
                                             }),
-                                        SizedBox(width: 20.w),
-                                        choiceIndex==1?TextButton(
-                                          child: Text('PDF出力',style: TextStyle(color: Colors.orange),),
-                                          onPressed: (){
-                                            Navigator.push(
-                                            context,
-                                            MaterialPageRoute(builder: (context) => PDFView(info: information,name: name!,)),
-                                          );},
-                                        ):SizedBox(),
+                                        Spacer(),
+                                        choiceIndex == 1
+                                            ? TextButton(
+                                                child: Text(
+                                                  'PDF出力',
+                                                  style: TextStyle(
+                                                      color: Colors.orange),
+                                                ),
+                                                onPressed: () {
+                                                  Navigator.push(
+                                                    context,
+                                                    MaterialPageRoute(
+                                                        builder: (context) =>
+                                                            PDFView(
+                                                              info: information,
+                                                              name: name!,
+                                                            )),
+                                                  );
+                                                },
+                                              )
+                                            : SizedBox(),
                                       ],
                                     ),
                                     SizedBox(height: 10.h),
@@ -193,96 +307,6 @@ class _StaffKintaiState extends ConsumerState<StaffKintai> {
                                                 children: [
                                                   Text(information[
                                                       'hourlyWage']),
-                                                  TextButton(
-                                                      style: ButtonStyle(
-                                                        padding:
-                                                            MaterialStateProperty
-                                                                .all(EdgeInsets
-                                                                    .zero),
-                                                        minimumSize:
-                                                            MaterialStateProperty
-                                                                .all(Size.zero),
-                                                        tapTargetSize:
-                                                            MaterialTapTargetSize
-                                                                .shrinkWrap,
-                                                      ),
-                                                      child: Text(
-                                                        '編集',
-                                                        style: TextStyle(
-                                                            fontSize: 10.sp),
-                                                      ),
-                                                      onPressed: () {
-                                                        showDialog(
-                                                          context: context,
-                                                          builder: (BuildContext
-                                                              context) {
-                                                            String inputText =
-                                                                '';
-
-                                                            return AlertDialog(
-                                                              title: Text('時給'),
-                                                              content:
-                                                                  TextField(
-                                                                keyboardType:
-                                                                    TextInputType
-                                                                        .number,
-                                                                inputFormatters: [
-                                                                  FilteringTextInputFormatter
-                                                                      .digitsOnly
-                                                                ],
-                                                                onChanged:
-                                                                    (text) {
-                                                                  inputText =
-                                                                      text;
-                                                                },
-                                                              ),
-                                                              actions: [
-                                                                TextButton(
-                                                                  child: Text(
-                                                                      'キャンセル',
-                                                                      style: TextStyle(
-                                                                          color:
-                                                                              Colors.red)),
-                                                                  onPressed:
-                                                                      () {
-                                                                    Navigator.of(
-                                                                            context)
-                                                                        .pop();
-                                                                  },
-                                                                ),
-                                                                TextButton(
-                                                                  child: Text(
-                                                                      'OK'),
-                                                                  onPressed:
-                                                                      () async {
-                                                                    await ref
-                                                                        .read(authViewModelProvider
-                                                                            .notifier)
-                                                                        .upDateHourlyWage(
-                                                                            uid,
-                                                                            int.parse(inputText));
-                                                                    information = await ref
-                                                                        .read(kintaiProvider
-                                                                            .notifier)
-                                                                        .getMonth(
-                                                                            uid,
-                                                                            selectedMonth ??
-                                                                                DateTime(now.year, now.month, 1));
-
-                                                                    setState(
-                                                                        () {});
-
-                                                                    Navigator.of(
-                                                                            context)
-                                                                        .pop(
-                                                                            inputText);
-                                                                  },
-                                                                ),
-                                                              ],
-                                                            );
-                                                          },
-                                                        );
-                                                      }),
                                                 ],
                                               )),
                                             ],
@@ -482,13 +506,30 @@ class _StaffKintaiState extends ConsumerState<StaffKintai> {
                                     await ref
                                         .read(kintaiProvider.notifier)
                                         .updateFire(uid, selectedDate ?? now);
-                                    AlertMessageDialog.show(context, '更新が完了しました！', '');
-
+                                    AlertMessageDialog.show(
+                                        context, '更新が完了しました！', '');
                                   },
-                                )
+                                ),
+                                choiceIndex == 0
+                                    ? SizedBox(
+                                    height: ads[0].size.height.toDouble(),
+                                    width: ads[0].size.width.toDouble(),
+                                    child: AdWidget(ad: ads[0]))
+                                    : SizedBox(
+                                    height: ads[1].size.height.toDouble(),
+                                    width: ads[1].size.width.toDouble(),
+                                    child: AdWidget(ad: ads[1])),
                               ],
                             )
-                      : SizedBox()
+                      : choiceIndex == 0
+                      ? SizedBox(
+                      height: ads[2].size.height.toDouble(),
+                      width: ads[2].size.width.toDouble(),
+                      child: AdWidget(ad: ads[2]))
+                      : SizedBox(
+                      height: ads[3].size.height.toDouble(),
+                      width: ads[3].size.width.toDouble(),
+                      child: AdWidget(ad: ads[3])),
                 ]),
               ));
   }
@@ -547,7 +588,8 @@ class _StaffKintaiState extends ConsumerState<StaffKintai> {
                     return AlertDialog(
                       title: Text('何円分のまかないですか？'),
                       content: TextField(
-                        keyboardType: TextInputType.number,
+                        keyboardType: TextInputType.numberWithOptions(
+                            signed: true, decimal: true),
                         inputFormatters: [
                           FilteringTextInputFormatter.digitsOnly
                         ],
@@ -707,7 +749,8 @@ class _StaffKintaiState extends ConsumerState<StaffKintai> {
                         return AlertDialog(
                           title: Text('何円分のまかないですか？'),
                           content: TextField(
-                            keyboardType: TextInputType.number,
+                            keyboardType: TextInputType.numberWithOptions(
+                                signed: true, decimal: true),
                             inputFormatters: [
                               FilteringTextInputFormatter.digitsOnly
                             ],
@@ -743,7 +786,7 @@ class _StaffKintaiState extends ConsumerState<StaffKintai> {
                 child: Text('編集'),
               ),
               TextButton(
-                  onPressed: ()async {
+                  onPressed: () async {
                     await ref.read(kintaiProvider.notifier).delete(index);
                   },
                   child: Text(
