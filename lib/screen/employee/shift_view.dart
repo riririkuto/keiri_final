@@ -28,7 +28,7 @@ class _ShiftViewState extends ConsumerState<ShiftView> {
     print('fadsfds');
     bannerAd = BannerAd(
         size: AdSize.banner,
-        adUnitId:Platform.isAndroid? 'ca-app-pub-3940256099942544/6300978111':'ca-app-pub-5187414655441156/3688733803',
+        adUnitId:Platform.isAndroid? 'ca-app-pub-3940256099942544/6300978111':'ca-app-pub-5187414655441156/7444145981',
         listener: BannerAdListener(onAdLoaded: (Ad ad) {
           setState(() {
             print('fads');
