@@ -21,7 +21,7 @@ import '../view_moedl/kintai_view_model.dart';
 import '../view_moedl/money_view_model.dart';
 import '../view_moedl/shit_view_model.dart';
 
-StateProvider<InterstitialAd?> adProvider = StateProvider((ref) => null);
+StateProvider<List<InterstitialAd?>> adProvider = StateProvider((ref) => []);
 StateProvider<bool> next = StateProvider((ref) => false);
 
 class CustomDrawer extends ConsumerStatefulWidget {
@@ -39,40 +39,8 @@ class _CustomDrawerState extends ConsumerState<CustomDrawer> {
   bool isLoad = true;
   String? error;
 
-  @override
-  void initState() {
-    print('foidjasklfjs');
-    print((ref.read(drawerTapProvider.notifier).state + 1) % 3 == 0);
-    if ((ref.read(drawerTapProvider.notifier).state + 1) % 3 == 0) {
-      isLoad = false;
-      _loadInterstitialAd();
-    }
-    // TODO: implement initState
-    super.initState();
-  }
 
-  void _loadInterstitialAd() {
-    InterstitialAd.load(
-      adUnitId: Platform.isAndroid
-          ? 'ca-app-pub-3940256099942544/8691691433'
-          : 'ca-app-pub-5187414655441156/5652590159',
-      request: AdRequest(),
-      adLoadCallback: InterstitialAdLoadCallback(
-        onAdLoaded: (ad) {
-          ref.read(adProvider.notifier).state = ad;
-          _interstitialAd = ad;
-          ref.read(adProvider.notifier).state = ad;
-          setState(() {
-            isLoad = true;
-          });
-        },
-        onAdFailedToLoad: (err) {
-          error = err.message;
-          print('Failed to load an interstitial ad: ${err.message}');
-        },
-      ),
-    );
-  }
+
 
   // TODO: Implement _loadInterstitialAd()
 
@@ -89,7 +57,6 @@ class _CustomDrawerState extends ConsumerState<CustomDrawer> {
               child: const CircularProgressIndicator())
           : Column(
               children: <Widget>[
-                Text(error ?? 'ああ'),
                 SizedBox(
                   height: 140.h,
                   child: UserAccountsDrawerHeader(
@@ -229,13 +196,13 @@ class _CustomDrawerState extends ConsumerState<CustomDrawer> {
           print(randomBit);
           if ((ref.read(drawerTapProvider.notifier).state) % 3 == 0) {
             if (randomBit == 0) {
-              ref.read(adProvider.notifier).state?.show();
+              ref.read(adProvider.notifier).state[((ref.read(drawerTapProvider.notifier).state) ~/ 3).toInt()]?.show();
             } else if (randomBit == 1) {
               ref.read(next.notifier).state = true;
             }
           } else if (ref.read(next.notifier).state) {
             ref.read(next.notifier).state = false;
-            ref.read(adProvider.notifier).state?.show();
+            ref.read(adProvider.notifier).state[0]?.show();
           }
         },
         child: Container(

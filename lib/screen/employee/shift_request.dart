@@ -48,7 +48,7 @@ class ShiftRequestState extends ConsumerState<ShiftRequest> {
   void _loadInterstitialAd() {
     InterstitialAd.load(
       adUnitId: Platform.isAndroid
-          ? 'ca-app-pub-3940256099942544/8691691433'
+          ? 'ca-app-pub-5187414655441156/3050277857'
           : 'ca-app-pub-5187414655441156/5652590159',
       request: AdRequest(),
       adLoadCallback: InterstitialAdLoadCallback(
@@ -143,6 +143,8 @@ class ShiftRequestState extends ConsumerState<ShiftRequest> {
             showDialogPicker(context);
           } else {
             _interstitialAd?.show();
+            showDialogPicker(context);
+
           }
         },
         child: const Icon(Icons.add),

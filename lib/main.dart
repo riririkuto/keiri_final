@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
@@ -6,6 +8,7 @@ import 'package:google_mobile_ads/google_mobile_ads.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:keiri_new/screen/employee/shift_view.dart';
 import 'package:keiri_new/view_moedl/auth_view_model.dart';
+import 'package:keiri_new/widgets/drawer.dart';
 import 'package:syncfusion_flutter_calendar/calendar.dart';
 
 import 'firebase_options.dart';
@@ -37,13 +40,43 @@ class MyApp extends ConsumerStatefulWidget {
 }
 
 class _MyAppState extends ConsumerState<MyApp> {
+
+  void _loadInterstitialAd() {
+    int times=0;
+    while(times<=5){
+      print('times==$times');
+      InterstitialAd.load(
+        adUnitId: Platform.isAndroid
+            ? 'ca-app-pub-5187414655441156/30502778572'
+            : 'ca-app-pub-5187414655441156/5652590159',
+        request: AdRequest(),
+        adLoadCallback: InterstitialAdLoadCallback(
+          onAdLoaded: (ad) {
+            ref.read(adProvider.notifier).state = [
+              ...ref.read(adProvider.notifier).state,
+              ad
+            ];
+          },
+          onAdFailedToLoad: (err) {
+            ref.read(adProvider.notifier).state = [
+              ...ref.read(adProvider.notifier).state,
+              null
+            ];
+            print('Failed to load an interstitial ad: ${err.message}');
+          },
+        ),
+      );
+      times++;
+    }}
+
+
+
   @override
   void initState() {
     super.initState();
-
+    _loadInterstitialAd();
     ref.read(authViewModelProvider.notifier).readProfile();
   }
-
 
   @override
   Widget build(BuildContext context) {
@@ -78,14 +111,15 @@ class _MyAppState extends ConsumerState<MyApp> {
   }
 }
 
-class MyHomePage extends StatefulWidget {
+class MyHomePage extends ConsumerStatefulWidget {
   MyHomePage({Key? key}) : super(key: key);
 
   @override
   _MyHomePageState createState() => _MyHomePageState();
 }
 
-class _MyHomePageState extends State<MyHomePage> {
+class _MyHomePageState extends ConsumerState<MyHomePage> {
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(

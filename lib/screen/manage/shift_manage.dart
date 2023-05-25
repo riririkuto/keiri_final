@@ -30,7 +30,6 @@ class _ShiftManageState extends ConsumerState<ShiftManage> {
   @override
   Widget build(BuildContext context) {
     print('ss');
-    ref.read(adProvider.notifier).state?.show();
     List<Appointment> appointments = ref.watch(shiftProvider);
     return Scaffold(
         appBar: AppBar(title: Text('シフト管理画面')),
