@@ -49,6 +49,7 @@ class _ShiftViewState extends ConsumerState<ShiftView> {
   bool reLoaded = true;
 
   void showAd() {
+
       ref.read(adReProvider.notifier).state?.fullScreenContentCallback;
       ref.read(adReProvider.notifier).state?.show(onUserEarnedReward: (AdWithoutView ad, RewardItem reward) {
         // ユーザーが報酬を獲得した場合に呼び出されるコールバック

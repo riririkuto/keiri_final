@@ -18,8 +18,7 @@ import 'screen/auth/login_view.dart';
 StateProvider<int> drawerIndexProvider = StateProvider((ref) => 0);
 StateProvider<int> drawerTapProvider = StateProvider((ref) => 0);
 StateProvider<int> adLevelProvider = StateProvider((ref) => 0);
-StateProvider<RewardedInterstitialAd?> adReProvider =
-    StateProvider((ref) => null);
+StateProvider<RewardedAd?> adReProvider = StateProvider((ref) => null);
 
 void main() async {
   Duration duration = Duration(hours: 1, minutes: 22);
@@ -82,20 +81,21 @@ class _MyAppState extends ConsumerState<MyApp> {
       times++;
     }
 
-    RewardedInterstitialAd.load(
-      adUnitId: Platform.isAndroid
-          ? 'ca-app-pub-3940256099942544/5354046379'
-          : 'ca-app-pub-5187414655441156/1041732621',
-      request: AdRequest(),
-      rewardedInterstitialAdLoadCallback: RewardedInterstitialAdLoadCallback(
-        onAdLoaded: (ad) {
-          ref.read(adReProvider.notifier).state = ad;
-        },
-        onAdFailedToLoad: (error) {
-          print('Rewarded interstitial ad failed to load: $error');
-        },
-      ),
-    );
+    RewardedAd.load(
+        adUnitId: Platform.isAndroid
+            ? 'ca-app-pub-3940256099942544/1712485313'
+            : 'ca-app-pub-5187414655441156/1764621509',
+        request: AdRequest(),
+        rewardedAdLoadCallback: RewardedAdLoadCallback(
+          onAdLoaded: (ad) {
+            ref.read(adReProvider.notifier).state = ad;
+          },
+          onAdFailedToLoad: (error) {
+            ref.read(adReProvider.notifier).state = null;
+
+            print('Rewarded interstitial ad failed to load: $error');
+          },
+        ));
   }
 
   @override
