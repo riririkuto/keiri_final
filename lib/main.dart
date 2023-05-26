@@ -54,6 +54,21 @@ class MyApp extends ConsumerStatefulWidget {
 class _MyAppState extends ConsumerState<MyApp> {
   void _loadInterstitialAd() {
     int times = 0;
+    RewardedAd.load(
+        adUnitId: Platform.isAndroid
+            ? 'ca-app-pub-3940256099942544/1712485313'
+            : 'ca-app-pub-5187414655441156/1764621509',
+        request: AdRequest(),
+        rewardedAdLoadCallback: RewardedAdLoadCallback(
+          onAdLoaded: (ad) {
+            ref.read(adReProvider.notifier).state = ad;
+          },
+          onAdFailedToLoad: (error) {
+            ref.read(adReProvider.notifier).state = null;
+
+            print('Rewarded interstitial ad failed to load: $error');
+          },
+        ));
 
     while (times <= 8) {
       print('times==$times');
@@ -81,21 +96,6 @@ class _MyAppState extends ConsumerState<MyApp> {
       times++;
     }
 
-    RewardedAd.load(
-        adUnitId: Platform.isAndroid
-            ? 'ca-app-pub-3940256099942544/1712485313'
-            : 'ca-app-pub-5187414655441156/1764621509',
-        request: AdRequest(),
-        rewardedAdLoadCallback: RewardedAdLoadCallback(
-          onAdLoaded: (ad) {
-            ref.read(adReProvider.notifier).state = ad;
-          },
-          onAdFailedToLoad: (error) {
-            ref.read(adReProvider.notifier).state = null;
-
-            print('Rewarded interstitial ad failed to load: $error');
-          },
-        ));
   }
 
   @override

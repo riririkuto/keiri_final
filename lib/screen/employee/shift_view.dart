@@ -73,7 +73,8 @@ class _ShiftViewState extends ConsumerState<ShiftView> {
       appBar: AppBar(title: Text('シフト確認')),
       drawer: CustomDrawer(),
       body: !ref.read(adReViewProvider.notifier).state &&
-              ref.read(adLevelProvider.notifier).state == 1
+              ref.read(adLevelProvider.notifier).state == 1 &&
+              ref.watch(adReProvider.notifier).state != null
           ? reLoaded
               ? Center(
                   child: Column(
