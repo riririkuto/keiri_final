@@ -6,6 +6,7 @@ import 'package:flutter/services.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:google_mobile_ads/google_mobile_ads.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
+import 'package:keiri_new/main.dart';
 
 import '../../view_moedl/auth_view_model.dart';
 import '../../view_moedl/kintai_view_model.dart';
@@ -37,11 +38,12 @@ class _InOutRestState extends ConsumerState<InOutRest> {
     ad();
     super.initState();
   }
+
+  BannerAd? bannerAd;
+
   void ad() {
     var index = 0;
     while (index <= 2) {
-      BannerAd bannerAd;
-
       bannerAd = BannerAd(
           size: AdSize.banner,
           adUnitId: Platform.isAndroid
@@ -55,7 +57,6 @@ class _InOutRestState extends ConsumerState<InOutRest> {
           }),
           request: AdRequest())
         ..load();
-      ads.add(bannerAd);
 
       index++;
     }
@@ -76,6 +77,13 @@ class _InOutRestState extends ConsumerState<InOutRest> {
       body: Center(
         child: Column(
           children: [
+            bannerAd != null &&ref.read(adLevelProvider.notifier).state==1
+                ? SizedBox(
+                    height: bannerAd!.size.height.toDouble(),
+                    width: bannerAd!.size.width.toDouble(),
+                    child: AdWidget(ad: bannerAd!))
+                : SizedBox(),
+            SizedBox(height: 15.h),
             Flexible(
               child: Column(
                 children: [
@@ -172,18 +180,7 @@ class _InOutRestState extends ConsumerState<InOutRest> {
                                     },
                                     child: Text(nameSuccess ? '決定' : '検索'),
                                   ),
-                            nameSuccess
-                                ? SizedBox(
-                                    height: ads[0].size.height.toDouble(),
-                                    width: ads[0].size.width.toDouble(),
-                                    child: loaded
-                                        ? AdWidget(ad: ads[0])
-                                        : SizedBox(),
-                                  )
-                                : SizedBox(
-                                    height: ads[1].size.height.toDouble(),
-                                    width: ads[1].size.width.toDouble(),
-                                    child: AdWidget(ad: ads[1])),
+                            SizedBox(height: 5.h),
                           ],
                         ),
                   passwordSuccess
@@ -258,17 +255,10 @@ class _InOutRestState extends ConsumerState<InOutRest> {
                           ],
                         )
                       : SizedBox(),
-                  SizedBox(height: 5.h),
 
                 ],
               ),
             ),
-            loaded&&passwordSuccess
-                ? SizedBox(
-                height: ads[2].size.height.toDouble(),
-                width: ads[2].size.width.toDouble(),
-                child: AdWidget(ad: ads[2]))
-                : SizedBox()
           ],
         ),
       ),

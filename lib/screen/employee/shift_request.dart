@@ -5,6 +5,7 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:google_mobile_ads/google_mobile_ads.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:intl/intl.dart';
+import 'package:keiri_new/main.dart';
 
 import '../../view_moedl/shit_view_model.dart';
 import '../../widgets/drawer.dart';
@@ -139,10 +140,11 @@ class ShiftRequestState extends ConsumerState<ShiftRequest> {
       floatingActionButton: FloatingActionButton(
         backgroundColor: Colors.grey,
         onPressed: () {
-          if (adTap) {
+          print(ref.read(adProvider.notifier).state,);
+          if (adTap||ref.read(adLevelProvider.notifier).state==0) {
             showDialogPicker(context);
           } else {
-            _interstitialAd?.show();
+            ref.read(adProvider.notifier).state[0]?.show();
             showDialogPicker(context);
 
           }

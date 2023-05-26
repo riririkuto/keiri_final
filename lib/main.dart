@@ -1,5 +1,6 @@
 import 'dart:io';
 
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
@@ -16,6 +17,9 @@ import 'screen/auth/login_view.dart';
 
 StateProvider<int> drawerIndexProvider = StateProvider((ref) => 0);
 StateProvider<int> drawerTapProvider = StateProvider((ref) => 0);
+StateProvider<int> adLevelProvider = StateProvider((ref) => 0);
+StateProvider<RewardedInterstitialAd?> adReProvider =
+    StateProvider((ref) => null);
 
 void main() async {
   Duration duration = Duration(hours: 1, minutes: 22);
@@ -31,23 +35,32 @@ void main() async {
   await Firebase.initializeApp(
     options: DefaultFirebaseOptions.currentPlatform,
   );
-  runApp(ProviderScope(child: MyApp()));
+  final querySnapshot = await FirebaseFirestore.instance
+      .collection('settings')
+      .doc('adMode')
+      .get();
+  int level = querySnapshot.data()!['level'] as int;
+  runApp(ProviderScope(child: MyApp(level: level)));
 }
 
 class MyApp extends ConsumerStatefulWidget {
+  final int level;
+
+  const MyApp({super.key, required this.level});
+
   @override
   ConsumerState<MyApp> createState() => _MyAppState();
 }
 
 class _MyAppState extends ConsumerState<MyApp> {
-
   void _loadInterstitialAd() {
-    int times=0;
-    while(times<=5){
+    int times = 0;
+
+    while (times <= 8) {
       print('times==$times');
       InterstitialAd.load(
         adUnitId: Platform.isAndroid
-            ? 'ca-app-pub-5187414655441156/30502778572'
+            ? 'ca-app-pub-3940256099942544/1033173712'
             : 'ca-app-pub-5187414655441156/5652590159',
         request: AdRequest(),
         adLoadCallback: InterstitialAdLoadCallback(
@@ -67,9 +80,23 @@ class _MyAppState extends ConsumerState<MyApp> {
         ),
       );
       times++;
-    }}
+    }
 
-
+    RewardedInterstitialAd.load(
+      adUnitId: Platform.isAndroid
+          ? 'ca-app-pub-3940256099942544/5354046379'
+          : "ca-app-pub-3940256099942544/6978759866",
+      request: AdRequest(),
+      rewardedInterstitialAdLoadCallback: RewardedInterstitialAdLoadCallback(
+        onAdLoaded: (ad) {
+          ref.read(adReProvider.notifier).state = ad;
+        },
+        onAdFailedToLoad: (error) {
+          print('Rewarded interstitial ad failed to load: $error');
+        },
+      ),
+    );
+  }
 
   @override
   void initState() {
@@ -80,6 +107,9 @@ class _MyAppState extends ConsumerState<MyApp> {
 
   @override
   Widget build(BuildContext context) {
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      ref.read(adLevelProvider.notifier).state = widget.level;
+    });
     return ScreenUtilInit(
         designSize: const Size(360, 640),
         minTextAdapt: true,
@@ -119,7 +149,6 @@ class MyHomePage extends ConsumerStatefulWidget {
 }
 
 class _MyHomePageState extends ConsumerState<MyHomePage> {
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(

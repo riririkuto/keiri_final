@@ -83,6 +83,16 @@ class _StaffKintaiState extends ConsumerState<StaffKintai> {
                 ))
             : SingleChildScrollView(
                 child: Column(children: [
+                  choiceIndex == 0
+                      ? SizedBox(
+                      height: ads[0].size.height.toDouble(),
+                      width: ads[0].size.width.toDouble(),
+                      child: AdWidget(ad: ads[0]))
+                      : SizedBox(
+                      height: ads[1].size.height.toDouble(),
+                      width: ads[1].size.width.toDouble(),
+                      child: AdWidget(ad: ads[1])),
+                  SizedBox(height: 10.h),
                   Text('名前で検索', style: TextStyle(fontSize: 20.sp)),
                   MyTextField(
                     controller: TextEditingController()..text = name ?? '',
@@ -510,26 +520,10 @@ class _StaffKintaiState extends ConsumerState<StaffKintai> {
                                         context, '更新が完了しました！', '');
                                   },
                                 ),
-                                choiceIndex == 0
-                                    ? SizedBox(
-                                    height: ads[0].size.height.toDouble(),
-                                    width: ads[0].size.width.toDouble(),
-                                    child: AdWidget(ad: ads[0]))
-                                    : SizedBox(
-                                    height: ads[1].size.height.toDouble(),
-                                    width: ads[1].size.width.toDouble(),
-                                    child: AdWidget(ad: ads[1])),
+
                               ],
                             )
-                      : choiceIndex == 0
-                      ? SizedBox(
-                      height: ads[2].size.height.toDouble(),
-                      width: ads[2].size.width.toDouble(),
-                      child: AdWidget(ad: ads[2]))
-                      : SizedBox(
-                      height: ads[3].size.height.toDouble(),
-                      width: ads[3].size.width.toDouble(),
-                      child: AdWidget(ad: ads[3])),
+                      : SizedBox(),
                 ]),
               ));
   }

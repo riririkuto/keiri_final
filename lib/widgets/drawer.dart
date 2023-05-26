@@ -1,4 +1,3 @@
-import 'dart:io';
 import 'dart:math';
 
 import 'package:flutter/material.dart';
@@ -38,9 +37,6 @@ class _CustomDrawerState extends ConsumerState<CustomDrawer> {
   var seni;
   bool isLoad = true;
   String? error;
-
-
-
 
   // TODO: Implement _loadInterstitialAd()
 
@@ -194,15 +190,48 @@ class _CustomDrawerState extends ConsumerState<CustomDrawer> {
           int randomBit = random.nextInt(2);
           print('feafdas');
           print(randomBit);
-          if ((ref.read(drawerTapProvider.notifier).state) % 3 == 0) {
-            if (randomBit == 0) {
-              ref.read(adProvider.notifier).state[((ref.read(drawerTapProvider.notifier).state) ~/ 3).toInt()]?.show();
-            } else if (randomBit == 1) {
-              ref.read(next.notifier).state = true;
+          if (ref.read(adLevelProvider.notifier).state == 1) {
+            if ((ref.read(drawerTapProvider.notifier).state) % 3 == 0) {
+              if (randomBit == 0) {
+                ref
+                    .read(adProvider.notifier)
+                    .state[((ref.read(drawerTapProvider.notifier).state) ~/ 3)
+                            .toInt() +
+                        1]
+                    ?.show();
+              } else if (randomBit == 1) {
+                ref.read(next.notifier).state = true;
+              }
+            } else if (ref.read(next.notifier).state) {
+              ref.read(next.notifier).state = false;
+              ref
+                  .read(adProvider.notifier)
+                  .state[((ref.read(drawerTapProvider.notifier).state) ~/ 3)
+                          .toInt() +
+                      1]
+                  ?.show();
             }
-          } else if (ref.read(next.notifier).state) {
-            ref.read(next.notifier).state = false;
-            ref.read(adProvider.notifier).state[0]?.show();
+          } else {
+            if ((ref.read(drawerTapProvider.notifier).state) % 5 == 0) {
+              if (randomBit == 0) {
+                ref
+                    .read(adProvider.notifier)
+                    .state[((ref.read(drawerTapProvider.notifier).state) ~/ 5)
+                            .toInt() +
+                        1]
+                    ?.show();
+              } else if (randomBit == 1) {
+                ref.read(next.notifier).state = true;
+              }
+            } else if (ref.read(next.notifier).state) {
+              ref.read(next.notifier).state = false;
+              ref
+                  .read(adProvider.notifier)
+                  .state[((ref.read(drawerTapProvider.notifier).state) ~/ 5)
+                          .toInt() +
+                      1]
+                  ?.show();
+            }
           }
         },
         child: Container(
