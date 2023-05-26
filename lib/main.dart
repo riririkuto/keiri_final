@@ -85,7 +85,7 @@ class _MyAppState extends ConsumerState<MyApp> {
     RewardedInterstitialAd.load(
       adUnitId: Platform.isAndroid
           ? 'ca-app-pub-3940256099942544/5354046379'
-          : "ca-app-pub-3940256099942544/6978759866",
+          : "ca-app-pub-5187414655441156~6466160130",
       request: AdRequest(),
       rewardedInterstitialAdLoadCallback: RewardedInterstitialAdLoadCallback(
         onAdLoaded: (ad) {
