@@ -20,6 +20,7 @@ import '../view_moedl/kintai_view_model.dart';
 import '../view_moedl/money_view_model.dart';
 import '../view_moedl/shit_view_model.dart';
 
+
 StateProvider<List<InterstitialAd?>> adProvider = StateProvider((ref) => []);
 StateProvider<bool> next = StateProvider((ref) => false);
 
@@ -106,6 +107,7 @@ class _CustomDrawerState extends ConsumerState<CustomDrawer> {
                   child: Text('プライバシーポリシー',
                       style: TextStyle(color: Colors.grey, fontSize: 15.sp)),
                 ),
+
                 TextButton(
                     style: ButtonStyle(
                       padding: MaterialStateProperty.all(EdgeInsets.zero),
@@ -125,6 +127,50 @@ class _CustomDrawerState extends ConsumerState<CustomDrawer> {
                             false, //if you want to disable back feature set to false
                       );
                     }),
+                TextButton(
+                    style: ButtonStyle(
+                      padding: MaterialStateProperty.all(EdgeInsets.zero),
+                      minimumSize: MaterialStateProperty.all(Size.zero),
+                      tapTargetSize: MaterialTapTargetSize.shrinkWrap,
+                    ),
+                    child: Text('退会する',
+                        style: TextStyle(color: Colors.grey, fontSize: 15.sp)),
+                    onPressed: () async {
+                      showDialog(
+                        context: context,
+                        builder: (_) {
+                          return AlertDialog(
+                            title: Text('アカウント削除'),
+                            content: const Text("アカウントを削除するとデータがすべて失われ復元できません。\nよろしいですか？"),
+                            actions: [
+                              TextButton(
+                                child: const Text("キャンセル"),
+                                onPressed: () => Navigator.pop(context),
+                              ),
+                              TextButton(
+                                  child: const Text("OK",style:TextStyle(color:Colors.red)),
+                                  onPressed: ()async{
+                                    await user.delete();
+
+                                    Navigator.pushAndRemoveUntil<dynamic>(
+                                      context,
+                                      MaterialPageRoute<dynamic>(
+                                        builder: (BuildContext context) => LoginView(),
+                                      ),
+                                          (route) =>
+                                      false, //if you want to disable back feature set to false
+                                    );
+                                  }
+                              ),
+
+                            ],
+                          );
+                        },
+                      );
+
+
+                    }),
+
               ],
             ),
     );

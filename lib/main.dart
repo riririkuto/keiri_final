@@ -29,7 +29,7 @@ void main() async {
 
   WidgetsFlutterBinding.ensureInitialized();
   await MobileAds.instance.initialize();
-  // Firebase CLIのときはこの設定を書く
+
 
   await Firebase.initializeApp(
     options: DefaultFirebaseOptions.currentPlatform,
@@ -54,6 +54,8 @@ class MyApp extends ConsumerStatefulWidget {
 class _MyAppState extends ConsumerState<MyApp> {
   void _loadInterstitialAd() {
     int times = 0;
+    //デバッグ用の実機を接続すればエラーが出てIDがでる。
+    //それをAdRequestに入れればその端末だけテスト環境にできる
     RewardedAd.load(
         adUnitId: Platform.isAndroid
             ? 'ca-app-pub-3940256099942544/1712485313'
@@ -193,6 +195,7 @@ List<Appointment> getAppointments() {
       color: Colors.red,
       // recurrenceRule: 'FREQ=DAILY;COUNT=10',
       isAllDay: false));
+
   meetings.add(Appointment(
       startTime: startTime,
       endTime: endTime,
@@ -200,6 +203,7 @@ List<Appointment> getAppointments() {
       color: Colors.blue,
       // recurrenceRule: 'FREQ=DAILY;COUNT=10',
       isAllDay: false));
+
   meetings.add(Appointment(
       startTime: startTime.add(Duration(hours: 32)),
       endTime: endTime.add(Duration(hours: 35)),
