@@ -15,8 +15,8 @@ class appointmentViewModel extends StateNotifier<List<Appointment>> {
 
   appointmentViewModel(this._read) : super([]);
 
-  Future<void> shiftRequest(List<Map<String, DateTime>> shifts) async {
-    await _read(shiftRepositoryProvider).addShift(shifts);
+  Future<void> shiftRequest(List<Map<String, DateTime>> shifts,String ?uid,String?name) async {
+    await _read(shiftRepositoryProvider).addShift(shifts,uid,name);
   }
 
   Future<void> shiftManage(int year, int month) async {

@@ -137,12 +137,12 @@ class _MoneyManageDecisionState extends ConsumerState<MoneyManageDecision> {
       body: SingleChildScrollView(
         child: Column(
           children: [
-            loaded
-                ? SizedBox(
-                height: bannerAd?.size.height.toDouble(),
-                width: bannerAd?.size.width.toDouble(),
-                child: AdWidget(ad: bannerAd!))
-                : SizedBox(),
+            // loaded
+            //     ? SizedBox(
+            //     height: bannerAd?.size.height.toDouble(),
+            //     width: bannerAd?.size.width.toDouble(),
+            //     child: AdWidget(ad: bannerAd!))
+            //     : SizedBox(),
             SizedBox(height: 10.h),
             Row(
               mainAxisAlignment: MainAxisAlignment.center,

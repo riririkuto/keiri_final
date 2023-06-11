@@ -24,15 +24,14 @@ class KintaiViewModel extends StateNotifier<List<Map>> {
     await _read(kintaiRepositoryProvider).updateFire(uid, select, state);
   }
 
-  Future<void> addState(String kind, DateTime? time,int ? makanai) async {
+  Future<void> addState(String kind, DateTime? time, int? makanai) async {
     bool error = false;
-    if (kind=='まかない') {
+    if (kind == 'まかない') {
       state = [
         ...state,
         {'kind': kind, 'val': makanai}
       ];
-    }
-    else{
+    } else {
       state = [
         ...state,
         {'kind': kind, 'val': time}
@@ -40,10 +39,10 @@ class KintaiViewModel extends StateNotifier<List<Map>> {
     }
   }
 
-  bool check(){
-    List store=List.of(state);
-    int a=0;
-    int b=0;
+  bool check() {
+    List store = List.of(state);
+    int a = 0;
+    int b = 0;
     for (final attendance in store) {
       if (attendance['kind'] == '休憩開始') {
         a += 1;
@@ -51,8 +50,7 @@ class KintaiViewModel extends StateNotifier<List<Map>> {
         b += 1;
       }
     }
-   return a==b;
-
+    return a == b;
   }
 
   Future<void> add(String uid, String kind) async {
@@ -92,9 +90,9 @@ class KintaiViewModel extends StateNotifier<List<Map>> {
   }
 
   Future<void> delete(int index) async {
-    List store=List.of(state);
+    List store = List.of(state);
     store.removeAt(index);
-    state =[...store];
+    state = [...store];
   }
 
   Future timeCalculator(String uid, List<List<Map<String, dynamic>>> lists,
@@ -154,6 +152,7 @@ class KintaiViewModel extends StateNotifier<List<Map>> {
     print(mi);
     print((zissitsu.inMinutes ~/ 4));
     int salary = (zissitsu.inMinutes ~/ 15) * mi - totalMeal;
+    int salary1 = (zissitsu.inMinutes ~/ 15) * mi;
 
     return {
       'waste': waste,
@@ -162,7 +161,8 @@ class KintaiViewModel extends StateNotifier<List<Map>> {
       'totalMeal': '$totalMeal円',
       'hourlyWage': '$hourlyWage円',
       'zissitsu': '${zissitsu.inHours}時間 ${zissitsu.inMinutes % 60}分',
-      'salary': '$salary円'
+      'salary': '$salary円',
+          'salary1':'$salary1円'
     };
   }
 

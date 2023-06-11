@@ -70,7 +70,9 @@ class PDFView extends StatelessWidget {
               tableRowBuild('時給', 'hourlyWage'),
               tableRowBuild('出勤-休憩 時間', 'zissitsu'),
               tableRowBuild('給料-まかない　(15分単位で切り捨て)', 'salary'),
-            ]),
+                  tableRowBuild('給料(15分単位で切り捨て)', 'salary1'),
+
+                ]),
           );
         },
       ),

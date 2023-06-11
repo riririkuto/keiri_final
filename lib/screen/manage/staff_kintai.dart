@@ -37,32 +37,10 @@ class _StaffKintaiState extends ConsumerState<StaffKintai> {
 
   @override
   void initState() {
-    ad();
+
     super.initState();
   }
 
-  void ad() {
-    var index = 0;
-    while (index <= 3) {
-      BannerAd bannerAd;
-
-      bannerAd = BannerAd(
-          size: AdSize.banner,
-          adUnitId: Platform.isAndroid
-              ? 'ca-app-pub-5187414655441156/3688733803'
-              : 'ca-app-pub-5187414655441156/7444145981',
-          listener: BannerAdListener(onAdLoaded: (Ad ad) {
-            setState(() {
-              loaded = true;
-            });
-          }),
-          request: AdRequest())
-        ..load();
-      ads.add(bannerAd);
-
-      index++;
-    }
-  }
 
   List<BannerAd> ads = [];
   bool loaded = false;
@@ -334,6 +312,14 @@ class _StaffKintaiState extends ConsumerState<StaffKintai> {
                                                   Text('給料-まかない　(15分単位で切り捨て)')),
                                               DataCell(
                                                   Text(information['salary'])),
+                                            ],
+                                          ),
+                                          DataRow(
+                                            cells: [
+                                              DataCell(
+                                                  Text('給料　(15分単位で切り捨て)')),
+                                              DataCell(
+                                                  Text(information['salary1'])),
                                             ],
                                           ),
                                         ],

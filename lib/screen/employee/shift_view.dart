@@ -21,49 +21,15 @@ class ShiftView extends ConsumerStatefulWidget {
 class _ShiftViewState extends ConsumerState<ShiftView> {
   @override
   void initState() {
-    ad();
+
     super.initState();
   }
 
-  void ad() {
-    print('fadsfds');
-    bannerAd = BannerAd(
-        size: AdSize.banner,
-        adUnitId: Platform.isAndroid
-            ? 'ca-app-pub-5187414655441156/3688733803'
-            : 'ca-app-pub-5187414655441156/7444145981',
-        listener: BannerAdListener(onAdLoaded: (Ad ad) {
-          setState(() {
-            print('fads');
-            loaded = true;
-          });
-        }),
-        request: AdRequest())
-      ..load();
-  }
 
   late BannerAd bannerAd;
   bool loaded = false;
   bool reLoaded = true;
 
-  void showAd() {
-    ref.read(adReProvider.notifier).state?.fullScreenContentCallback;
-    if (ref.read(adReProvider.notifier).state == null) {
-      setState(() {
-        ref.read(adReViewProvider.notifier).state = true;
-      });
-    } else {
-      ref.read(adReProvider.notifier).state?.show(
-          onUserEarnedReward: (AdWithoutView ad, RewardItem reward) {
-        // ユーザーが報酬を獲得した場合に呼び出されるコールバック
-        setState(() {
-          ref.read(adReViewProvider.notifier).state = true;
-        });
-        print('User earned reward: ${reward.amount} ${reward.type}');
-        // リワード処理をここに実装する
-      });
-    }
-  }
 
   @override
   Widget build(BuildContext context) {
@@ -85,7 +51,7 @@ class _ShiftViewState extends ConsumerState<ShiftView> {
                           '1カ月のシフト閲覧回数が制限を超えました。\n広告を見ると閲覧できるようになります。'),
                       ElevatedButton(
                           onPressed: () {
-                            showAd();
+
                           },
                           child: Text('広告を見る')),
                     ],
@@ -122,13 +88,13 @@ class _ShiftViewState extends ConsumerState<ShiftView> {
                     ),
                   ),
                 ),
-                loaded
-                    ? SizedBox(
-                        height: bannerAd.size.height.toDouble(),
-                        width: bannerAd.size.width.toDouble(),
-                        child: loaded ? AdWidget(ad: bannerAd) : SizedBox(),
-                      )
-                    : SizedBox()
+                // loaded
+                //     ? SizedBox(
+                //         height: bannerAd.size.height.toDouble(),
+                //         width: bannerAd.size.width.toDouble(),
+                //         child: loaded ? AdWidget(ad: bannerAd) : SizedBox(),
+                //       )
+                //     : SizedBox()
               ],
             ),
     );

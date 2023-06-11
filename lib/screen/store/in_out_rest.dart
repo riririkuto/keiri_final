@@ -77,12 +77,12 @@ class _InOutRestState extends ConsumerState<InOutRest> {
       body: Center(
         child: Column(
           children: [
-            bannerAd != null &&ref.read(adLevelProvider.notifier).state==1
-                ? SizedBox(
-                    height: bannerAd!.size.height.toDouble(),
-                    width: bannerAd!.size.width.toDouble(),
-                    child: AdWidget(ad: bannerAd!))
-                : SizedBox(),
+            // bannerAd != null &&ref.read(adLevelProvider.notifier).state==1
+            //     ? SizedBox(
+            //         height: bannerAd!.size.height.toDouble(),
+            //         width: bannerAd!.size.width.toDouble(),
+            //         child: AdWidget(ad: bannerAd!))
+            //     : SizedBox(),
             SizedBox(height: 15.h),
             Flexible(
               child: Column(

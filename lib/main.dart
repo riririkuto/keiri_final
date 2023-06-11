@@ -52,58 +52,11 @@ class MyApp extends ConsumerStatefulWidget {
 }
 
 class _MyAppState extends ConsumerState<MyApp> {
-  void _loadInterstitialAd() {
-    int times = 0;
-    //デバッグ用の実機を接続すればエラーが出てIDがでる。
-    //それをAdRequestに入れればその端末だけテスト環境にできる
-    RewardedAd.load(
-        adUnitId: Platform.isAndroid
-            ? 'ca-app-pub-3940256099942544/1712485313'
-            : 'ca-app-pub-5187414655441156/1764621509',
-        request: AdRequest(),
-        rewardedAdLoadCallback: RewardedAdLoadCallback(
-          onAdLoaded: (ad) {
-            ref.read(adReProvider.notifier).state = ad;
-          },
-          onAdFailedToLoad: (error) {
-            ref.read(adReProvider.notifier).state = null;
-
-            print('Rewarded interstitial ad failed to load: $error');
-          },
-        ));
-
-    while (times <= 8) {
-      print('times==$times');
-      InterstitialAd.load(
-        adUnitId: Platform.isAndroid
-            ? 'ca-app-pub-3940256099942544/1033173712'
-            : 'ca-app-pub-5187414655441156/5652590159',
-        request: AdRequest(),
-        adLoadCallback: InterstitialAdLoadCallback(
-          onAdLoaded: (ad) {
-            ref.read(adProvider.notifier).state = [
-              ...ref.read(adProvider.notifier).state,
-              ad
-            ];
-          },
-          onAdFailedToLoad: (err) {
-            ref.read(adProvider.notifier).state = [
-              ...ref.read(adProvider.notifier).state,
-              null
-            ];
-            print('Failed to load an interstitial ad: ${err.message}');
-          },
-        ),
-      );
-      times++;
-    }
-
-  }
 
   @override
   void initState() {
     super.initState();
-    _loadInterstitialAd();
+
     ref.read(authViewModelProvider.notifier).readProfile();
   }
 

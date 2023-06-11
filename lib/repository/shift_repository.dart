@@ -12,10 +12,16 @@ class ShiftRepository {
   final CollectionReference _requestsRef =
       FirebaseFirestore.instance.collection('shifts');
 
-  Future<void> addShift(List<Map<String, DateTime>> shifts) async {
+  Future<void> addShift(
+      List<Map<String, DateTime>> shifts, String? uid1,String ?name1) async {
     User myProfile = FirebaseAuth.instance.currentUser!;
     String name = myProfile.displayName!;
+
     String uid = myProfile.uid;
+    if (uid1 != null) {
+      uid = uid1;
+      name=name1!;
+    }
     Map<String, int> intM = {'status': 0};
     for (Map shift in shifts) {
       String id = DateTime.now().microsecondsSinceEpoch.toString();
@@ -24,13 +30,14 @@ class ShiftRepository {
       await _requestsRef.doc(id).set(sum);
     }
   }
-  Future<List<Appointment>> shiftView(int year,int month,int day) async {
-    DateTime start = DateTime(year,month, day);
+
+  Future<List<Appointment>> shiftView(int year, int month, int day) async {
+    DateTime start = DateTime(year, month, day);
 
     DateTime end = DateTime(
       year,
       month,
-      day+6,
+      day + 6,
       23,
       59,
     );
@@ -58,16 +65,14 @@ class ShiftRepository {
     print('s');
     print(appointments.length);
     return appointments;
-
   }
 
-  Future<List<Appointment>> shiftManage(int year,int month) async {
-
-    DateTime start = DateTime(year,month, 1);
+  Future<List<Appointment>> shiftManage(int year, int month) async {
+    DateTime start = DateTime(year, month, 1);
 
     DateTime end = DateTime(
-     year,
-     month + 1,
+      year,
+      month + 1,
       0,
       23,
       59,
@@ -97,10 +102,8 @@ class ShiftRepository {
     print(appointments.length);
     return appointments;
   }
-  Future<void>statusChange(String id,int status)async {
-    await _requestsRef.doc(id).update({'status':status});
+
+  Future<void> statusChange(String id, int status) async {
+    await _requestsRef.doc(id).update({'status': status});
   }
-
-
-
 }

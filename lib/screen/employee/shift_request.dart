@@ -32,7 +32,6 @@ class ShiftRequestState extends ConsumerState<ShiftRequest> {
 
   @override
   void initState() {
-    _loadInterstitialAd();
     super.initState();
   }
 
@@ -46,31 +45,6 @@ class ShiftRequestState extends ConsumerState<ShiftRequest> {
 
   InterstitialAd? _interstitialAd;
 
-  void _loadInterstitialAd() {
-    InterstitialAd.load(
-      adUnitId: Platform.isAndroid
-          ? 'ca-app-pub-5187414655441156/3050277857'
-          : 'ca-app-pub-5187414655441156/5652590159',
-      request: AdRequest(),
-      adLoadCallback: InterstitialAdLoadCallback(
-        onAdLoaded: (ad) {
-          ad.fullScreenContentCallback = FullScreenContentCallback(
-            onAdDismissedFullScreenContent: (ad) {
-              adTap = true;
-              showDialogPicker(context);
-            },
-          );
-
-          setState(() {
-            _interstitialAd = ad;
-          });
-        },
-        onAdFailedToLoad: (err) {
-          print('Failed to load an interstitial ad: ${err.message}');
-        },
-      ),
-    );
-  }
 
   @override
   Widget build(BuildContext context) {
@@ -124,7 +98,7 @@ class ShiftRequestState extends ConsumerState<ShiftRequest> {
                         });
                         await ref
                             .read(shiftProvider.notifier)
-                            .shiftRequest(sce);
+                            .shiftRequest(sce,null,null);
                         setState(() {
                           sce = [];
                           onTap = false;
@@ -141,10 +115,10 @@ class ShiftRequestState extends ConsumerState<ShiftRequest> {
         backgroundColor: Colors.grey,
         onPressed: () {
           print(ref.read(adProvider.notifier).state,);
-          if (adTap||ref.read(adLevelProvider.notifier).state==0) {
+          if (adTap||ref.read(adLevelProvider.notifier).state!=1) {
             showDialogPicker(context);
           } else {
-            ref.read(adProvider.notifier).state[0]?.show();
+            // ref.read(adProvider.notifier).state[0]?.show();
             showDialogPicker(context);
 
           }

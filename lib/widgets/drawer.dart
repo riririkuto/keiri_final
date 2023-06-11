@@ -147,6 +147,7 @@ class _CustomDrawerState extends ConsumerState<CustomDrawer> {
                                 child: const Text("キャンセル"),
                                 onPressed: () => Navigator.pop(context),
                               ),
+
                               TextButton(
                                   child: const Text("OK",style:TextStyle(color:Colors.red)),
                                   onPressed: ()async{
@@ -250,33 +251,33 @@ class _CustomDrawerState extends ConsumerState<CustomDrawer> {
               }
             } else if (ref.read(next.notifier).state) {
               ref.read(next.notifier).state = false;
-              ref
-                  .read(adProvider.notifier)
-                  .state[((ref.read(drawerTapProvider.notifier).state) ~/ 3)
-                          .toInt() +
-                      1]
-                  ?.show();
+              // ref
+              //     .read(adProvider.notifier)
+              //     .state[((ref.read(drawerTapProvider.notifier).state) ~/ 3)
+              //             .toInt() +
+              //         1]
+              //     ?.show();
             }
           } else {
             if ((ref.read(drawerTapProvider.notifier).state) % 5 == 0) {
               if (randomBit == 0) {
-                ref
-                    .read(adProvider.notifier)
-                    .state[((ref.read(drawerTapProvider.notifier).state) ~/ 5)
-                            .toInt() +
-                        1]
-                    ?.show();
+                // ref
+                //     .read(adProvider.notifier)
+                //     .state[((ref.read(drawerTapProvider.notifier).state) ~/ 5)
+                //             .toInt() +
+                //         1]
+                //     ?.show();
               } else if (randomBit == 1) {
                 ref.read(next.notifier).state = true;
               }
             } else if (ref.read(next.notifier).state) {
               ref.read(next.notifier).state = false;
-              ref
-                  .read(adProvider.notifier)
-                  .state[((ref.read(drawerTapProvider.notifier).state) ~/ 5)
-                          .toInt() +
-                      1]
-                  ?.show();
+              // ref
+              //     .read(adProvider.notifier)
+              //     .state[((ref.read(drawerTapProvider.notifier).state) ~/ 5)
+              //             .toInt() +
+              //         1]
+              //     ?.show();
             }
           }
         },
